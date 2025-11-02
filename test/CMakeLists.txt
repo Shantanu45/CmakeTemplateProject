@@ -39,46 +39,11 @@ add_executable(${TEST_PROJECT_NAME}
 	${ALL_FILES}
 )
 
+setup_msvc_options(${TEST_PROJECT_NAME})
+
 set(TEST_INCLUDE 
 "${PROJECT_SOURCE_DIR}/src"
 )
-
-
-use_props(${TEST_PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
-
-################################################################################
-# Compile and link options
-################################################################################
-# Using target_compile_options in CMake allows you to add specific compiler options to a target, giving you more fine-grained control over how each target is built. 
-# This can be useful if you need to pass additional flags to the compiler or enable certain warnings or optimizations.
-if(MSVC)
-	if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-		target_compile_options(${TEST_PROJECT_NAME} PRIVATE
-			$<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugHeadless>>:
-				/Od
-			>
-			$<$<OR:$<CONFIG:Release>,$<CONFIG:ReleaseHeadless>>:
-				/Oi;
-				/Gy
-			>
-			/permissive-;
-			/sdl;
-			/W3;
-			${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-			${DEFAULT_CXX_EXCEPTION_HANDLING}
-		)
-	endif()
-	if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-		target_link_options(${TEST_PROJECT_NAME} PRIVATE
-			$<$<OR:$<CONFIG:Release>,$<CONFIG:ReleaseHeadless>>:
-				/OPT:REF;
-				/OPT:ICF
-			>
-			/DEBUG;
-			/SUBSYSTEM:CONSOLE
-		)
-	endif()
-endif()
 
 target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE ENABLED_GC_TEST)
 

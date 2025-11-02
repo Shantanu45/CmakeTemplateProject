@@ -15,36 +15,7 @@ add_executable(${PROJECT_NAME}
 	${ALL_FILES}
 )
 
-use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
-
-if(MSVC)
-	if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-		target_compile_options(${PROJECT_NAME} PRIVATE
-			$<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugHeadless>>:
-				/Od
-			>
-			$<$<OR:$<CONFIG:Release>,$<CONFIG:ReleaseHeadless>>:
-				/Oi;
-				/Gy
-			>
-			/permissive-;
-			/sdl;
-			/W3;
-			${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-			${DEFAULT_CXX_EXCEPTION_HANDLING}
-		)
-	endif()
-	if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-		target_link_options(${PROJECT_NAME} PRIVATE
-			$<$<OR:$<CONFIG:Release>,$<CONFIG:ReleaseHeadless>>:
-				/OPT:REF;
-				/OPT:ICF
-			>
-			/DEBUG;
-			/SUBSYSTEM:CONSOLE
-		)
-	endif()
-endif()
+setup_msvc_options(${PROJECT_NAME})
 
 set(INCLUDES 
 "${PROJECT_SOURCE_DIR}/src"

@@ -1,5 +1,38 @@
 # utils file for projects came from visual studio solution with cmake-converter.
 
+function(setup_msvc_options TARGET_NAME_PARAM)
+
+    use_props(${TARGET_NAME_PARAM} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
+
+    if(MSVC)
+        if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+            target_compile_options(${TARGET_NAME_PARAM} PRIVATE
+                $<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugHeadless>>:
+                    /Od
+                >
+                $<$<OR:$<CONFIG:Release>,$<CONFIG:ReleaseHeadless>>:
+                    /Oi;
+                    /Gy
+                >
+                /permissive-;
+                /sdl;
+                /W3;
+                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+                ${DEFAULT_CXX_EXCEPTION_HANDLING}
+            )
+
+            target_link_options(${TARGET_NAME_PARAM} PRIVATE
+                $<$<OR:$<CONFIG:Release>,$<CONFIG:ReleaseHeadless>>:
+                    /OPT:REF;
+                    /OPT:ICF
+                >
+                /DEBUG;
+                /SUBSYSTEM:CONSOLE
+            )
+        endif()
+    endif()
+endfunction()
+
 ################################################################################
 # Wrap each token of the command with condition
 ################################################################################
